@@ -7,6 +7,8 @@ package com.sqa.vk.helpers;
 
 import java.util.*;
 
+import com.sqa.vk.helpers.exceptions.*;
+
 /**
  * AppBasics //ADDD (description of class)
  * <p>
@@ -22,9 +24,7 @@ public class AppBasics {
 
 	private static Scanner scanner = new Scanner(System.in);
 
-	private static String userName;
-
-	public static void farewellUser() {
+	public static void farewellUser(String userName) {
 		System.out.println("\nThank you, " + userName + " for using our application.");
 		System.out.println("Have a nice day!");
 	}
@@ -36,31 +36,42 @@ public class AppBasics {
 		// variable
 		// String userName = null;
 		System.out.print("Can i get your name? ");
-		userName = scanner.nextLine();
+		String userName = scanner.nextLine();
 		return userName;
 	}
 
 	public static boolean requestBoolean(String question) {
 		String input;
-		System.out.println(question + " ");
-		input = scanner.nextLine();
-		if (input.trim().equalsIgnoreCase("Yes")) {
-			return true;
-		} else if (input.trim().equalsIgnoreCase("No")) {
-			return false;
-		} else {
-			System.out.println("You didn't respond to the question. Please enter \"Yes\" or \"No\"");
-			return false;
+		boolean isValid = false;
+		while (!isValid) {
+			System.out.println(question + " ");
+			input = scanner.nextLine();
+			if (input.trim().equalsIgnoreCase("Yes")) {
+				return true;
+			} else if (input.trim().equalsIgnoreCase("No")) {
+				return false;
+			} else {
+				System.out.println("You didn't respond to the question. Please enter \"Yes\" or \"No\"");
+			}
 		}
+		return isValid = true;
 	}
 
 	public static char requestChar(String question) {
 		char letter = 0;
-		System.out.println(question + " ");
-		try {
-			letter = scanner.nextLine().charAt(0);
-		} catch (StringIndexOutOfBoundsException e) {
-			System.out.println("You did not supply a valid input [" + letter + "]. please provide a single letter.");
+		boolean isValid = false;
+		while (!isValid) {
+			System.out.println(question + " ");
+			try {
+				letter = scanner.nextLine().charAt(0);
+				if (Character.isLetter(letter) || Character.isDigit(letter)) {
+					System.out.println("You enterered \"" + letter + "\"");
+				}
+				isValid = true;
+			} catch (StringIndexOutOfBoundsException e) {
+				System.out
+						.println("You did not supply a valid input [" + letter + "]. please provide a single letter.");
+			}
 		}
 		return letter;
 	}
@@ -68,12 +79,16 @@ public class AppBasics {
 	public static double requestDouble(String question) {
 		double num = 0;
 		String input;
-		System.out.print(question + " ");
-		input = scanner.nextLine();
-		try {
-			num = Double.parseDouble(input);
-		} catch (NumberFormatException e) {
-			System.out.println("You did not supply a valid number [" + input + "]. please provide only digits.");
+		boolean isValid = false;
+		while (!isValid) {
+			System.out.print(question + " ");
+			input = scanner.nextLine();
+			try {
+				num = Double.parseDouble(input);
+				isValid = true;
+			} catch (NumberFormatException e) {
+				System.out.println("You did not supply a valid number [" + input + "]. please provide only digits.");
+			}
 		}
 		return num;
 	}
@@ -81,25 +96,44 @@ public class AppBasics {
 	public static float requestFloat(String question) {
 		float num = 0;
 		String input;
-		System.out.print(question + " ");
-		input = scanner.nextLine();
-		try {
-			num = Float.parseFloat(input);
-		} catch (NumberFormatException e) {
-			System.out.println("You did not supply a valid number [" + input + "]. please provide only digits.");
+		boolean isValid = false;
+		while (!isValid) {
+			System.out.print(question + " ");
+			input = scanner.nextLine();
+			try {
+				num = Float.parseFloat(input);
+				isValid = true;
+			} catch (NumberFormatException e) {
+				System.out.println("You did not supply a valid number [" + input + "]. please provide only digits.");
+			}
 		}
 		return num;
 	}
 
-	public static int requestInt(String question) {
+	public static int requestInt(String question, int min, int max) {
 		int num = 0;
 		String input;
-		System.out.print(question + " ");
-		input = scanner.nextLine();
-		try {
-			num = Integer.parseInt(input);
-		} catch (NumberFormatException e) {
-			System.out.println("You did not supply a valid number [" + input + "]. please provide only digits.");
+		boolean isValid = false;
+		while (!isValid) {
+			System.out.print(question + " ");
+			input = scanner.nextLine();
+			try {
+				num = Integer.parseInt(input);
+				if (num > max) {
+					throw new RequestIntOverMaxException();
+				} else if (num < min) {
+					throw new RequestIntUnderMinException();
+				}
+				isValid = true;
+			} catch (NumberFormatException e) {
+				System.out.println("You did not supply a valid number [" + input + "]. please provide only digits.");
+			} catch (RequestIntOverMaxException e) {
+				System.out.println("You have exceeded the max value of " + max + "[" + input
+						+ "]. Please provide a number withing range.");
+			} catch (RequestIntUnderMinException e) {
+				System.out.println("You have exceeded the min value of " + max + "[" + input
+						+ "]. Please provide a number withing range.");
+			}
 		}
 		return num;
 	}
@@ -107,12 +141,16 @@ public class AppBasics {
 	public static long requestLong(String question) {
 		String input;
 		long num = 0;
-		System.out.println(question + " ");
-		input = scanner.nextLine();
-		try {
-			num = Long.parseLong(input);
-		} catch (NumberFormatException e) {
-			System.out.println("You didn't provide expected input [" + input + "]. Please enter Long number.");
+		boolean isValid = false;
+		while (!isValid) {
+			System.out.println(question + " ");
+			input = scanner.nextLine();
+			try {
+				num = Long.parseLong(input);
+				isValid = true;
+			} catch (NumberFormatException e) {
+				System.out.println("You didn't provide expected input [" + input + "]. Please enter Long number.");
+			}
 		}
 		return num;
 	}
