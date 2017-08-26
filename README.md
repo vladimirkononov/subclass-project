@@ -1,11 +1,13 @@
-# Basic Project :+1:
+# Automation Project
 
-*Structure for creating a Basic Java Project.*
+*Structure for creating a basic automation test using Selenium.*
 
-**Java 7**
+**Java 8**
 
 * Maven
+* JUnit 4.12
+* Selenium 2.53
 
-Java Project.
+Automation Project using Selenium.
 
 [Vladimir Kononov](https://github.com/vladimirkononov/)
